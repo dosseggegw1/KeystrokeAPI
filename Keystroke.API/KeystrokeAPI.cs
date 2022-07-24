@@ -12,7 +12,6 @@ namespace Keystroke.API
 		private IntPtr globalKeyboardHookId;
 		private IntPtr currentModuleId;
 		private const int WH_KEYBOARD_LL = 13;
-		private const int WH_MOUSE_LL = 14;
 		private const int WM_KEYDOWN = 0x100;
 		private const int WM_SYSKEYDOWN = 0x104;
         private User32.LowLevelHook HookKeyboardDelegate; //We need to have this delegate as a private field so the GC doesn't collect it
@@ -39,8 +38,15 @@ namespace Keystroke.API
 			if (nCode >= 0 && (wParamAsInt == WM_KEYDOWN || wParamAsInt == WM_SYSKEYDOWN))
 			{
 				bool shiftPressed = false;
+				bool altPressed = false;
 				bool capsLockActive = false;
 
+				// Verify if alt gr is pressed
+				var altKeyState = User32.GetAsyncKeyState(KeyCode.RMenu);
+				if (FirstBitIsTurnedOn(altKeyState))
+					altPressed = true;
+
+				// Verify if shift is pressed
 				var shiftKeyState = User32.GetAsyncKeyState(KeyCode.ShiftKey);
 				if (FirstBitIsTurnedOn(shiftKeyState))
 					shiftPressed = true;
@@ -50,7 +56,7 @@ namespace Keystroke.API
 				if (User32.GetKeyState(KeyCode.Capital) == 1)
 					capsLockActive = true;
 
-				KeyParser(wParam, lParam, shiftPressed, capsLockActive);
+				KeyParser(wParam, lParam, shiftPressed, altPressed, capsLockActive);
 			}
 
 			//Chain to the next hook. Otherwise other applications that 
@@ -64,14 +70,14 @@ namespace Keystroke.API
 			return Convert.ToBoolean(value & 0x8000);
 		}
 
-		private void KeyParser(IntPtr wParam, IntPtr lParam, bool shiftPressed, bool capsLockPressed)
+		private void KeyParser(IntPtr wParam, IntPtr lParam, bool shiftPressed, bool altPressed, bool capsLockPressed)
 		{
 			var keyValue = (KeyCode)Marshal.ReadInt32(lParam);
 
             var keyboardLayout = new KeyboardLayout().GetCurrentKeyboardLayout();
             var windowTitle = new Window().CurrentWindowTitle();
 
-            var key = new KeyPressed(keyValue, shiftPressed, capsLockPressed, windowTitle, keyboardLayout.ToString());
+            var key = new KeyPressed(keyValue, shiftPressed, altPressed, capsLockPressed, windowTitle, keyboardLayout.ToString());
 
 			keyPressedCallback.Invoke(key);
 		}

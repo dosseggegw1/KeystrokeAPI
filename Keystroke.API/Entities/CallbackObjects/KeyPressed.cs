@@ -5,17 +5,19 @@
         public KeyCode KeyCode { get; set; }
         public bool CapsLockOn { get; set; }
         public bool ShiftPressed { get; set; }
+        public bool AltPressed { get; set; }
         public string CurrentWindow { get; set; }
         public string KeyboardLayout { get; set; }
 
-        internal KeyPressed(KeyCode keyCode, bool shiftPressed, bool capsLockOn, string currentWindow, string keyboardLayout)
+        internal KeyPressed(KeyCode keyCode, bool shiftPressed, bool altPressed, bool capsLockOn, string currentWindow, string keyboardLayout)
         {
             this.KeyCode = keyCode;
             this.ShiftPressed = shiftPressed;
+            this.AltPressed = altPressed;
             this.CapsLockOn = capsLockOn;
             this.CurrentWindow = currentWindow;
             this.KeyboardLayout = keyboardLayout;
-        }        
+        }
 
         public override string ToString()
         {
@@ -33,7 +35,10 @@
             {
                 return ShiftCharacterIfItIsShiftable(character);
             }
-
+            else if (AltPressed)
+            {
+                return AltCharacterIfItIsAlttable(character);
+            }
             return character;
         }
 
@@ -88,37 +93,25 @@
 
             if (KeyCode == KeyCode.Multiply) return "*";
             if (KeyCode == KeyCode.Add) return "+";
-            if (KeyCode == KeyCode.Separator) return "|";
-            if (KeyCode == KeyCode.Subtract) return "-";            
-            if (KeyCode == KeyCode.Divide) return "/";            
+            if (KeyCode == KeyCode.Separator) return "à";
+            if (KeyCode == KeyCode.Subtract) return "-";
+            if (KeyCode == KeyCode.Divide) return "/";
             if (KeyCode == KeyCode.Oemplus) return "=";
             if (KeyCode == KeyCode.Oemcomma) return ",";
             if (KeyCode == KeyCode.OemMinus) return "-";
             if (KeyCode == KeyCode.OemPeriod) return ".";
             if (KeyCode == KeyCode.NumPadDot) return ".";
+            if (KeyCode == KeyCode.OemBackslash) return "<";
 
-            if (KeyboardLayout == "pt-BR")
-            {
-                if (KeyCode == KeyCode.LatinKeyboardBar) return "/";
-                if (KeyCode == KeyCode.Decimal) return ",";
-                if (KeyCode == KeyCode.Oem1) return "ç";
-                if (KeyCode == KeyCode.Oem2) return ";";
-                if (KeyCode == KeyCode.Oem3) return "`";
-                if (KeyCode == KeyCode.Oem4) return "´";
-                if (KeyCode == KeyCode.Oem5) return @"]";
-                if (KeyCode == KeyCode.Oem6) return "[";
-                if (KeyCode == KeyCode.Oem7) return "~";
-            }
-
-            //EN-US
             if (KeyCode == KeyCode.Decimal) return ".";
-            if (KeyCode == KeyCode.Oem1) return ";";
+            if (KeyCode == KeyCode.Oem1) return "è";
             if (KeyCode == KeyCode.Oem2) return "/";
-            if (KeyCode == KeyCode.Oem3) return "`";
-            if (KeyCode == KeyCode.Oem4) return "[";
-            if (KeyCode == KeyCode.Oem5) return "\\";
-            if (KeyCode == KeyCode.Oem6) return "]";
-            if (KeyCode == KeyCode.Oem7) return "'";
+            if (KeyCode == KeyCode.Oem3) return "¨";
+            if (KeyCode == KeyCode.Oem4) return "'";
+            if (KeyCode == KeyCode.Oem5) return "à";
+            if (KeyCode == KeyCode.Oem6) return "^";
+            if (KeyCode == KeyCode.Oem7) return "é";
+            if (KeyCode == KeyCode.Oem8) return "$";
 
             if (KeyCode == KeyCode.NumPad0) return "0";
             if (KeyCode == KeyCode.NumPad1) return "1";
@@ -130,6 +123,7 @@
             if (KeyCode == KeyCode.NumPad7) return "7";
             if (KeyCode == KeyCode.NumPad8) return "8";
             if (KeyCode == KeyCode.NumPad9) return "9";
+
             if (KeyCode == KeyCode.Q) return "q";
             if (KeyCode == KeyCode.W) return "w";
             if (KeyCode == KeyCode.E) return "e";
@@ -166,46 +160,60 @@
             if (KeyCode == KeyCode.D7) return "7";
             if (KeyCode == KeyCode.D8) return "8";
             if (KeyCode == KeyCode.D9) return "9";
+            if (KeyCode == KeyCode.Oemtilde) return "§";
+
+
             return string.Empty;
         }
 
         private string ShiftCharacterIfItIsShiftable(string character)
         {
-            if (KeyCode == KeyCode.D1) return "!";
-            if (KeyCode == KeyCode.D2) return "@";
-            if (KeyCode == KeyCode.D3) return "#";
-            if (KeyCode == KeyCode.D4) return "$";
+            if (KeyCode == KeyCode.D1) return "+";
+            if (KeyCode == KeyCode.D2) return "\"";
+            if (KeyCode == KeyCode.D3) return "*";
+            if (KeyCode == KeyCode.D4) return "ç";
             if (KeyCode == KeyCode.D5) return "%";
-            if (KeyCode == KeyCode.D6) return "^";
-            if (KeyCode == KeyCode.D7) return "&";
-            if (KeyCode == KeyCode.D8) return "*";
-            if (KeyCode == KeyCode.D9) return "(";
-            if (KeyCode == KeyCode.D0) return ")";
-            if (KeyCode == KeyCode.Oemcomma) return "<";
+            if (KeyCode == KeyCode.D6) return "&";
+            if (KeyCode == KeyCode.D7) return "/";
+            if (KeyCode == KeyCode.D8) return "(";
+            if (KeyCode == KeyCode.D9) return ")";
+            if (KeyCode == KeyCode.D0) return "=";
+            if (KeyCode == KeyCode.Oemcomma) return ";";
             if (KeyCode == KeyCode.OemMinus) return "_";
-            if (KeyCode == KeyCode.OemPeriod) return ">";
+            if (KeyCode == KeyCode.OemPeriod) return ":";
             if (KeyCode == KeyCode.Oemplus) return "+";
             if ((int)KeyCode == 193) return "?";
-
-            if (KeyboardLayout == "pt-BR")
-            {
-                if (KeyCode == KeyCode.Oem1) return "Ç";
-                if (KeyCode == KeyCode.Oem2) return ":";
-                if (KeyCode == KeyCode.Oem3) return "\"";
-                if (KeyCode == KeyCode.Oem4) return "`";
-                if (KeyCode == KeyCode.Oem5) return "}";
-                if (KeyCode == KeyCode.Oem6) return "{";
-                if (KeyCode == KeyCode.Oem7) return "^";
-            }
-
-            //EN-US
-            if (KeyCode == KeyCode.Oem1) return ":";
+            if (KeyCode == KeyCode.OemBackslash) return ">";
+            if (KeyCode == KeyCode.Oem1) return "ü";
             if (KeyCode == KeyCode.Oem2) return "?";
-            if (KeyCode == KeyCode.Oem3) return "~";
-            if (KeyCode == KeyCode.Oem4) return "{";
-            if (KeyCode == KeyCode.Oem5) return "|";
-            if (KeyCode == KeyCode.Oem6) return "}";
-            if (KeyCode == KeyCode.Oem7) return "\"";
+            if (KeyCode == KeyCode.Oem3) return "!";
+            if (KeyCode == KeyCode.Oem4) return "?";
+            if (KeyCode == KeyCode.Oem5) return "ä";
+            if (KeyCode == KeyCode.Oem6) return "`";
+            if (KeyCode == KeyCode.Oem7) return "ö";
+            if (KeyCode == KeyCode.Oem8) return "£";
+
+            //Character not "shiftable"
+            return character;
+        }
+
+        private string AltCharacterIfItIsAlttable(string character)
+        {
+            if (KeyCode == KeyCode.OemBackslash) return "\\";
+            if (KeyCode == KeyCode.D1) return "¦";
+            if (KeyCode == KeyCode.D2) return "@";
+            if (KeyCode == KeyCode.D3) return "#";
+            if (KeyCode == KeyCode.D4) return "°";
+            if (KeyCode == KeyCode.D5) return "§";
+            if (KeyCode == KeyCode.D6) return "¬";
+            if (KeyCode == KeyCode.D7) return "|";
+            if (KeyCode == KeyCode.D8) return "¢";
+            if (KeyCode == KeyCode.Oem4) return "´";
+            if (KeyCode == KeyCode.Oem6) return "~";
+            if (KeyCode == KeyCode.Oem8) return "}";
+            if (KeyCode == KeyCode.Oem1) return "[";
+            if (KeyCode == KeyCode.Oem3) return "]";
+            if (KeyCode == KeyCode.Oem5) return "{";
 
             //Character not "shiftable"
             return character;
